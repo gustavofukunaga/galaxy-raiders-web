@@ -1,55 +1,17 @@
 <template>
   <div id="canvas">
     <div id="deep-space" />
-    <div id="space-field">
-      <SpaceObject id="spaceship" class="spaceship" :data="spaceField.ship" resolution="2" />
-
-      <SpaceObject class="asteroid" :data="asteroid" resolution="2"
-                  :key="asteroid.center"
-                  v-for="asteroid in spaceField.asteroids" />
-
-      <SpaceObject class="missile" :data="missile" resolution="2"
-                  :key="missile.center"
-                  v-for="missile in spaceField.missiles" />
-
-      <SpaceObject class="explosion" :data="explosion" resolution="2"
-                  :key="explosion.center"
-                  v-for="explosion in spaceField.explosions" />
+    <div id="menu">
+      <h1>GALAXY RAIDERS</h1>
+      <button><router-link class="menu-button" to="/game">Start</router-link></button>
+      <button><router-link class="menu-button" to="/leaderboard">Leaderboard</router-link></button>
+      <button class="menu-button" onclick="window.location.href='https://google.com';">Exit</button>
     </div>
   </div>
 </template>
 
-<script setup>
-const {
-  data: spaceField,
-  refresh: updateSpaceField
-} = await $get("/space-field");
-
-onMounted(() => {
-  window.addEventListener("keydown", async (event) => {
-    const keyToCommand = {
-      "ArrowUp": "MOVE_SHIP_UP",
-      "ArrowDown": "MOVE_SHIP_DOWN",
-      "ArrowRight": "MOVE_SHIP_RIGHT",
-      "ArrowLeft": "MOVE_SHIP_LEFT",
-      "Space": "LAUNCH_MISSILE",
-      "Escape": "PAUSE_GAME",
-    };
-
-    const command = keyToCommand[event.code];
-
-    // Ignore if invalid key was pressed
-    if (command === undefined) return;
-
-    console.log(`Triggering command: ${command}`);
-    await $post("/ship/commands", { command })
-  });
-
-  window.setInterval(updateSpaceField, 1000);
-})
-</script>
-
 <style>
+
 #canvas {
   height: calc(100vh - 4rem);
   width: calc(100vw - 4rem);
@@ -66,18 +28,6 @@ onMounted(() => {
   align-items: center;
 }
 
-@keyframes slide {
-  0% {
-    transform: translate(1px);
-  }
-  50% {
-    transform: translate(-1px);
-  }
-  100% {
-    transform: translate(1px);
-  }
-}
-
 #deep-space {
   height: calc(100% - 4rem);
   width: calc(100% - 4rem);
@@ -90,26 +40,28 @@ onMounted(() => {
   z-index: 0;
 }
 
-#space-field {
+#menu {
   height: calc(100% - 4rem);
   width: calc(100% - 4rem);
+  
+  color: yellow;
+  font-size: large;
 
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
-
-.spaceship {
-  background-image: url("~/assets/spaceship.png");
-}
-
-.asteroid {
-  background-image: url("~/assets/asteroid.png");
-}
-
-.missile {
-  background-image: url("~/assets/missile.png");
-}
-
-.explosion {
-  background-image: url("~/assets/explosion.png");
+.menu-button {
+  background-color: grey;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }
 </style>
